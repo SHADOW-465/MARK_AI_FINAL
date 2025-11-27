@@ -8,7 +8,7 @@ export default function SignUpSuccessPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2 font-bold text-xl text-primary mb-4">
-            <span>EduGrade</span>
+            <span>MARK AI</span>
           </div>
           <Card>
             <CardHeader>
