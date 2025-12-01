@@ -159,7 +159,7 @@ export default function UploadPage({
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing with Gemini...
+                Processing...
               </>
             ) : (
               "Upload & Grade"
