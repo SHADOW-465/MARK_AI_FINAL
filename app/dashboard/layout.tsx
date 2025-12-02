@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Logo } from "@/components/ui/logo"
 import { Sidebar } from "./sidebar"
+import { MobileHeader } from "./mobile-header"
 
 export default async function DashboardLayout({
   children,
@@ -37,12 +38,7 @@ export default async function DashboardLayout({
 
       {/* Main Content */}
       <main className="lg:pl-28 h-full overflow-y-auto relative z-10 custom-scrollbar transition-all duration-300">
-        <header className="p-6 flex justify-between items-center sticky top-0 z-40 bg-[#022c22]/80 backdrop-blur-xl lg:hidden border-b border-white/10 shadow-lg">
-          <div className="flex items-center gap-2">
-            <Logo />
-          </div>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white">{userInitials}</div>
-        </header>
+        <MobileHeader isTeacher={isTeacher} userName={userName} userEmail={userEmail} userInitials={userInitials} />
 
         <div className="p-4 lg:p-10 max-w-[1600px] mx-auto">
           {children}

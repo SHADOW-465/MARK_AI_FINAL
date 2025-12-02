@@ -11,9 +11,10 @@ interface NavButtonProps {
     label: string
     onClick?: (id: string) => void
     href?: string
+    isMobile?: boolean
 }
 
-export const NavButton = ({ id, activeId, icon: Icon, label, onClick, href }: NavButtonProps) => {
+export const NavButton = ({ id, activeId, icon: Icon, label, onClick, href, isMobile = false }: NavButtonProps) => {
     const isActive = activeId === id
 
     const content = (
@@ -50,7 +51,7 @@ export const NavButton = ({ id, activeId, icon: Icon, label, onClick, href }: Na
 
             {/* Label - Hidden by default, visible on hover */}
             <span
-                className={`relative z-20 text-sm font-display font-semibold tracking-wider whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 pl-1 ${isActive ? "text-white shadow-black drop-shadow-sm" : ""}`}
+                className={`relative z-20 text-sm font-display font-semibold tracking-wider whitespace-nowrap ${isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300 delay-75 pl-1 ${isActive ? "text-white shadow-black drop-shadow-sm" : ""}`}
             >
                 {label}
             </span>
