@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { FileText, CheckCircle, AlertCircle, ArrowRight } from "lucide-react"
+import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 
@@ -37,9 +37,10 @@ export default async function ExamDetailsPage({
           </p>
         </div>
         <div className="flex gap-2">
-           <Link href={`/dashboard/grading/${id}`}>
-            <Button className="gap-2">
-              Go to Grading <ArrowRight className="h-4 w-4" />
+          <Link href={`/dashboard/exams/${id}/upload`}>
+            <Button>
+              <Upload className="mr-2 h-4 w-4" />
+              Upload Answer Sheets
             </Button>
           </Link>
         </div>
@@ -79,7 +80,7 @@ export default async function ExamDetailsPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Submissions</CardTitle>
+          <CardTitle>Student Submissions</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -90,6 +91,7 @@ export default async function ExamDetailsPage({
                 <TableHead>Status</TableHead>
                 <TableHead>Score</TableHead>
                 <TableHead>Confidence</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -111,12 +113,23 @@ export default async function ExamDetailsPage({
                       {sheet.total_score !== null ? `${sheet.total_score} / ${exam.total_marks}` : "-"}
                     </TableCell>
                     <TableCell>{sheet.confidence ? `${Math.round(sheet.confidence * 100)}%` : "-"}</TableCell>
+                    <TableCell className="text-right">
+                      {sheet.status === "graded" || sheet.status === "approved" ? (
+                        <Link href={`/dashboard/grading/${sheet.id}`}>
+                          <Button variant="outline" size="sm">
+                            Review
+                          </Button>
+                        </Link>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">Processing...</span>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
-                    No submissions yet. Go to Grading to upload answer sheets.
+                  <TableCell colSpan={6} className="h-24 text-center">
+                    No submissions yet. Upload answer sheets to start grading.
                   </TableCell>
                 </TableRow>
               )}
