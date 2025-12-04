@@ -55,7 +55,18 @@ export async function updateSession(request: NextRequest) {
   if (user && (pathname.startsWith("/auth") || pathname === "/")) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
-    return NextResponse.redirect(url)
+
+    // Create the redirect response
+    const redirectResponse = NextResponse.redirect(url)
+
+    // IMPORTANT: Copy cookies from supabaseResponse to redirectResponse
+    // This ensures that any session cookies set by Supabase (or refreshed) are preserved
+    const cookies = supabaseResponse.cookies.getAll()
+    cookies.forEach(cookie => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+
+    return redirectResponse
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
