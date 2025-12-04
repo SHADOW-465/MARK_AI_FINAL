@@ -37,30 +37,38 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const pathname = request.nextUrl.pathname
+
+  // Redirect unauthenticated users to login
   if (
-    request.nextUrl.pathname !== "/" &&
+    pathname !== "/" &&
     !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !pathname.startsWith("/auth") &&
+    !pathname.startsWith("/login")
   ) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
     return NextResponse.redirect(url)
   }
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  // Redirect authenticated users away from auth pages
+  if (user && (pathname.startsWith("/auth") || pathname === "/")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
 
+    // Create the redirect response
+    const redirectResponse = NextResponse.redirect(url)
+
+    // IMPORTANT: Copy cookies from supabaseResponse to redirectResponse
+    // This ensures that any session cookies set by Supabase (or refreshed) are preserved
+    const cookies = supabaseResponse.cookies.getAll()
+    cookies.forEach(cookie => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+
+    return redirectResponse
+  }
+
+  // IMPORTANT: You *must* return the supabaseResponse object as it is.
   return supabaseResponse
 }
